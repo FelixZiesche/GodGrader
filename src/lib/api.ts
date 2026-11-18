@@ -3,7 +3,7 @@ import type {
   AppInfo, AppSettings, Erwartungshorizont, KeyInfo, KeyStatus, ModelCache, Notenschluessel,
   ProjektMeta, SlotCheck, SlotKind, Stufe, Warnung,
   ImportAuftrag, KlausurInfo, PdfInfo, Schwaerzung,
-  Aufruf, Element, PromptArt, PromptVorlage, Schaetzung, Uebersicht,
+  Aufruf, Element, PromptArt, ProtokollEintrag, PruefDaten, PromptVorlage, Schaetzung, Uebersicht,
 } from './types'
 
 /** Fehler aus Rust kommen als deutscher Text. */
@@ -78,4 +78,19 @@ export const api = {
   promptZuruecksetzen: (art: PromptArt) => invoke<void>('prompt_zuruecksetzen', { art }),
   kiHilfeEwh: (projectId: string, ewh: Erwartungshorizont, nr: string) =>
     invoke<Element[]>('ki_hilfe_ewh', { projectId, ewh, nr }),
+
+  pruefdaten: (projectId: string, klausurId: string) => invoke<PruefDaten>('pruefdaten', { projectId, klausurId }),
+  beSetzen: (projectId: string, klausurId: string, elementId: string, be: number, bestaetigt: boolean) =>
+    invoke<PruefDaten>('be_setzen', { projectId, klausurId, elementId, be, bestaetigt }),
+  bestaetigungAufheben: (projectId: string, klausurId: string, elementId: string) =>
+    invoke<PruefDaten>('bestaetigung_aufheben', { projectId, klausurId, elementId }),
+  freigeben: (projectId: string, klausurId: string) => invoke<PruefDaten>('freigeben', { projectId, klausurId }),
+  freigabeZuruecknehmen: (projectId: string, klausurId: string) =>
+    invoke<PruefDaten>('freigabe_zuruecknehmen', { projectId, klausurId }),
+  abschriftSpeichern: (projectId: string, klausurId: string, aufgabe: string, text: string) =>
+    invoke<void>('abschrift_speichern', { projectId, klausurId, aufgabe, text }),
+  protokoll: (projectId: string, klausurId: string) => invoke<ProtokollEintrag[]>('protokoll', { projectId, klausurId }),
+  seitenbild: (projectId: string, seiteId: string) => invoke<ArrayBuffer>('seitenbild', { projectId, seiteId }),
+  aufgabeNeuBewerten: (projectId: string, klausurId: string, aufgabe: string) =>
+    invoke<PruefDaten>('aufgabe_neu_bewerten', { projectId, klausurId, aufgabe }),
 }

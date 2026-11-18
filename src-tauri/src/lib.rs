@@ -3,6 +3,7 @@
 
 mod commands;
 mod ki;
+mod pruefen;
 mod state;
 
 use tauri::Manager;
@@ -19,6 +20,15 @@ pub fn run() {
         })
         .invoke_handler(tauri::generate_handler![
             commands::app_info,
+            pruefen::pruefdaten,
+            pruefen::be_setzen,
+            pruefen::bestaetigung_aufheben,
+            pruefen::freigeben,
+            pruefen::freigabe_zuruecknehmen,
+            pruefen::abschrift_speichern,
+            pruefen::protokoll,
+            pruefen::seitenbild,
+            pruefen::aufgabe_neu_bewerten,
             ki::pipeline_uebersicht,
             ki::kosten_schaetzen,
             ki::pipeline_starten,

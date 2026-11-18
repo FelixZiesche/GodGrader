@@ -265,3 +265,68 @@ export interface Aufruf {
   dauer_ms: number
   ok: boolean
 }
+
+// ---------- Prüfansicht ----------
+
+export interface AbschriftZeile {
+  aufgabe: string
+  text: string
+  ki_text: string
+  unsicher: string[]
+  seiten: number[]
+}
+
+export interface BewertungZeile {
+  element_id: string
+  aufgabe: string
+  max_be: number
+  ki_be: number | null
+  begruendung: string
+  beleg: string
+  sicherheit: 'hoch' | 'mittel' | 'niedrig' | string
+  unsicher: boolean
+  zweit_be: number | null
+  zweit_begruendung: string | null
+  final_be: number | null
+  bestaetigt: boolean
+}
+
+export interface Schritt {
+  klausur_id: string
+  art: SchrittArt
+  aufgabe: string
+  status: SchrittStatus
+  modell: string | null
+  fehler: string | null
+  hinweis: string | null
+  aktualisiert: string
+}
+
+export interface Ergebnis {
+  summe: number
+  summe_final: number
+  gesamt: number
+  prozent: number
+  punkte: number | null
+  note: string | null
+  elemente: number
+  bestaetigt: number
+  geaendert: number
+}
+
+export interface PruefDaten {
+  klausur: KlausurInfo
+  abschriften: AbschriftZeile[]
+  bewertungen: BewertungZeile[]
+  schritte: Schritt[]
+  ergebnis: Ergebnis
+}
+
+export interface ProtokollEintrag {
+  element_id: string
+  ki_be: number | null
+  vorher: number | null
+  nachher: number | null
+  bestaetigt: boolean
+  zeit: string
+}

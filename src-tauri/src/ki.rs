@@ -26,7 +26,7 @@ fn modelle(state: &AppState) -> Vec<godgrader_core::models::ModelInfo> {
         .unwrap_or_default()
 }
 
-fn konfig(state: &AppState) -> Result<PipelineKonfig> {
+pub(crate) fn konfig(state: &AppState) -> Result<PipelineKonfig> {
     let s = state.settings();
     Ok(PipelineKonfig {
         slots: s.slots,

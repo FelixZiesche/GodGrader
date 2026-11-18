@@ -84,3 +84,17 @@ Kleinere Entscheidungen, die während der Entwicklung getroffen wurden. Neueste 
 | Prompt-Vorlagen | Vier Vorlagen (Abschreiben, Bewerten/Zweitmeinung, Feedback, KI-Hilfe) als `prompts/*.md` im **App-Ordner**, Editor unter „Einstellungen“ mit „Vorlage zurücksetzen“. Startfassungen wörtlich aus dem Auftrag, ergänzt um kurze Schema-Hinweise. Fehlende Platzhalter werden angezeigt. | Eine Vorlage für alle Projekte ist einfacher zu pflegen; projektbezogene Vorlagen ließen sich später ergänzen. |
 | KI-Hilfe beim Import | Button bei Aufgaben mit Warnungen im Erwartungshorizont. Das Bewerten-Modell schlägt Elemente vor, die Lehrkraft übernimmt oder verwirft. Kosten werden im Projekt verbucht. | Auftrag 4.2. |
 | Schwärzen aus | Hinweis auf der Seite „Verarbeitung“ und im Startdialog, nichts wird gesperrt. | Entscheidung zu M2. |
+
+## Meilenstein 5 – Prüfansicht
+
+| Thema | Entscheidung | Begründung |
+|---|---|---|
+| Aufbau | Drei Spalten: Seitenbild (Seitenwahl, Zoom mit Buttons oder Strg + Mausrad, Verschieben mit der Maus), Abschrift der gewählten Aufgabe, Bewertungselemente aller Aufgaben. Wählt man ein Element, springt das Seitenbild zur ersten Seite dieser Antwort. | Auftrag 4.5. |
+| Tastatur | J/K nächstes/voriges Element, 0–9 setzt BE, Enter bestätigt und springt zum nächsten unbestätigten Element. Bei halben BE setzt Komma oder Punkt „+0,5“. In Eingabefeldern sind die Tasten aus. | Zifferntaste ändert nur, erst Enter bestätigt: so bleibt jede Bestätigung eine bewusste Entscheidung. |
+| Unsicher | Ein Element gilt als unsicher bei Sicherheit „niedrig“, „hängt an unsicherer Stelle“, Abweichung zur Zweitmeinung ab 1 BE oder fehlendem KI-Vorschlag. Rot markiert; Filter „nur Unsicheres“. | |
+| Ohne KI-Vorschlag | Die Lehrkraft kann jedes Element selbst bewerten, auch wenn die KI-Bewertung fehlgeschlagen ist. | Ein Fehler darf die Korrektur nicht blockieren. |
+| Status | Erste Änderung setzt „in Prüfung“. Freigabe nur, wenn jedes Element des Erwartungshorizonts bestätigt ist. Freigegebene Klausuren sind gesperrt, bis die Freigabe zurückgenommen wird. | |
+| Abschrift ändern | Wird beim Verlassen des Feldes gespeichert; die KI-Fassung bleibt erhalten. „Diese Aufgabe neu bewerten“ ruft nur das Bewerten-Modell (und ggf. die Zweitmeinung) für diese Aufgabe auf und setzt deren Bestätigungen zurück. Kosten werden normal verbucht. | |
+| Protokoll | Jede Änderung (BE oder Bestätigung) wird mit KI-Vorschlag, altem und neuem Wert gespeichert und ist je Klausur einsehbar. Für die Statistik zählt „geändert“, wenn die finale BE vom KI-Vorschlag abweicht. | Auftrag 4.5, Statistik in M6. |
+| Live-Anzeige | Summe aus finalen BE, sonst KI-Vorschlag; Prozent und NP bzw. Note nach dem Notenschlüssel des Erwartungshorizonts. | |
+| Seitenbilder | Kommen als rohe Bytes über die Tauri-Schnittstelle (kein Dateizugriff aus der Oberfläche, kein Asset-Protokoll nötig). | Weniger freigegebene Pfade. |

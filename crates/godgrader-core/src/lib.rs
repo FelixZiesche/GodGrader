@@ -12,6 +12,7 @@ pub mod openrouter;
 pub mod paths;
 pub mod pdfium;
 pub mod projekt;
+pub mod pruefung;
 pub mod pseudonyme;
 pub mod scans;
 pub mod secrets;
