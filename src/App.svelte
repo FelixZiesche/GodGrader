@@ -104,8 +104,9 @@
       <p>GodGrader macht nur <strong>Vorschläge</strong>. Die Bewertung verantwortet immer die Lehrkraft.</p>
       <p>
         Klausuren sind personenbezogene Daten. Stimmen Sie den Einsatz mit echten Klausuren bitte vorher mit dem
-        schulischen Datenschutzbeauftragten ab. Im Programm werden nur Pseudonyme verwendet, Namenszeilen werden vor
-        dem Senden geschwärzt, und jede Anfrage verbietet den Anbietern die Datenspeicherung zum Training.
+        schulischen Datenschutzbeauftragten ab. Die Bezeichnung einer Klausur (Name oder Pseudonym) geht nie an die KI,
+        Namenszeilen lassen sich vor dem Senden schwärzen, und jede Anfrage verbietet den Anbietern die Datenspeicherung
+        zum Training.
       </p>
       <div class="zeile" style="justify-content: flex-end">
         <button class="primaer" onclick={hinweisBestaetigen}>Verstanden</button>
