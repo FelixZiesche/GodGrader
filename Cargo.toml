@@ -12,3 +12,7 @@ authors = ["Felix Ziesche"]
 lto = true
 codegen-units = 1
 strip = true
+
+# Abhängigkeiten auch im Entwicklungsbuild optimieren (Bildverarbeitung, PDF)
+[profile.dev.package."*"]
+opt-level = 2

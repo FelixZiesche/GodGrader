@@ -206,3 +206,180 @@ pub fn validate_ewh(ewh: Erwartungshorizont, halbe_be: bool) -> Vec<Warnung> {
 pub fn berechne_notenschluessel(stufe: Stufe, gesamt: f64) -> Notenschluessel {
     Notenschluessel::berechnen(stufe, gesamt)
 }
+
+// ---------------- Scans ----------------
+
+use godgrader_core::scans::{
+    self, Fortschritt, ImportAuftrag, KlausurInfo, ScanOptionen, Schwaerzung,
+};
+use tauri::{AppHandle, Emitter};
+
+async fn blocking<T: Send + 'static>(f: impl FnOnce() -> Result<T> + Send + 'static) -> Result<T> {
+    tauri::async_runtime::spawn_blocking(f)
+        .await
+        .map_err(|e| Error::Ungueltig(e.to_string()))?
+}
+
+#[derive(Serialize)]
+pub struct PdfInfo {
+    seiten: u32,
+    name: String,
+}
+
+#[tauri::command]
+pub async fn pdf_info(path: String) -> Result<PdfInfo> {
+    blocking(move || {
+        let p = std::path::PathBuf::from(&path);
+        Ok(PdfInfo {
+            seiten: scans::seitenzahl(&p)?,
+            name: p
+                .file_name()
+                .map(|n| n.to_string_lossy().into_owned())
+                .unwrap_or_default(),
+        })
+    })
+    .await
+}
+
+#[tauri::command]
+pub async fn pdf_miniaturen(path: String, breite: i32) -> Result<Vec<String>> {
+    blocking(move || scans::miniaturen(std::path::Path::new(&path), breite.clamp(60, 600))).await
+}
+
+#[tauri::command]
+pub async fn pdf_seitenvorschau(path: String, seite: u32, breite: i32) -> Result<String> {
+    blocking(move || {
+        scans::seitenvorschau(std::path::Path::new(&path), seite, breite.clamp(200, 2000))
+    })
+    .await
+}
+
+#[tauri::command]
+pub fn klausuren(state: State<'_, AppState>, project_id: String) -> Result<Vec<KlausurInfo>> {
+    Projekt::open(&state.paths, &project_id)?.klausuren()
+}
+
+#[tauri::command]
+pub async fn scans_importieren(
+    app: AppHandle,
+    state: State<'_, AppState>,
+    project_id: String,
+    auftraege: Vec<ImportAuftrag>,
+    optionen: ScanOptionen,
+) -> Result<Vec<KlausurInfo>> {
+    let paths = state.paths.clone();
+    blocking(move || {
+        let p = Projekt::open(&paths, &project_id)?;
+        p.scans_importieren(&auftraege, &optionen, |f: Fortschritt| {
+            let _ = app.emit("scan-fortschritt", f);
+        })
+    })
+    .await
+}
+
+#[tauri::command]
+pub async fn seiten_neu_erzeugen(
+    app: AppHandle,
+    state: State<'_, AppState>,
+    project_id: String,
+) -> Result<()> {
+    let paths = state.paths.clone();
+    blocking(move || {
+        Projekt::open(&paths, &project_id)?.seiten_neu_erzeugen(|f: Fortschritt| {
+            let _ = app.emit("scan-fortschritt", f);
+        })
+    })
+    .await
+}
+
+#[tauri::command]
+pub fn klausur_umbenennen(
+    state: State<'_, AppState>,
+    project_id: String,
+    id: String,
+    bezeichnung: String,
+) -> Result<()> {
+    Projekt::open(&state.paths, &project_id)?.klausur_umbenennen(&id, &bezeichnung)
+}
+
+#[tauri::command]
+pub fn klausur_loeschen(state: State<'_, AppState>, project_id: String, id: String) -> Result<()> {
+    Projekt::open(&state.paths, &project_id)?.klausur_loeschen(&id)
+}
+
+#[tauri::command]
+pub async fn seiten_miniatur(
+    state: State<'_, AppState>,
+    project_id: String,
+    seite_id: String,
+    breite: u32,
+) -> Result<String> {
+    let paths = state.paths.clone();
+    blocking(move || {
+        Projekt::open(&paths, &project_id)?.seiten_miniatur(&seite_id, breite.clamp(60, 1600))
+    })
+    .await
+}
+
+#[tauri::command]
+pub async fn beispielseite(
+    state: State<'_, AppState>,
+    project_id: String,
+    breite: i32,
+) -> Result<Option<String>> {
+    let paths = state.paths.clone();
+    blocking(move || Projekt::open(&paths, &project_id)?.beispielseite(breite.clamp(200, 2000)))
+        .await
+}
+
+#[tauri::command]
+pub fn get_schwaerzung(state: State<'_, AppState>, project_id: String) -> Result<Vec<Schwaerzung>> {
+    Projekt::open(&state.paths, &project_id)?.schwaerzung()
+}
+
+#[tauri::command]
+pub fn set_schwaerzung(
+    state: State<'_, AppState>,
+    project_id: String,
+    schwaerzung: Vec<Schwaerzung>,
+) -> Result<()> {
+    Projekt::open(&state.paths, &project_id)?.set_schwaerzung(&schwaerzung)
+}
+
+#[tauri::command]
+pub fn get_pseudonyme(state: State<'_, AppState>, project_id: String) -> Result<Vec<String>> {
+    Projekt::open(&state.paths, &project_id)?.pseudonyme()
+}
+
+#[tauri::command]
+pub fn set_pseudonyme(
+    state: State<'_, AppState>,
+    project_id: String,
+    liste: Vec<String>,
+) -> Result<()> {
+    Projekt::open(&state.paths, &project_id)?.set_pseudonyme(&liste)
+}
+
+#[tauri::command]
+pub fn pseudonyme_importieren(
+    state: State<'_, AppState>,
+    project_id: String,
+    path: String,
+) -> Result<Vec<String>> {
+    let liste = godgrader_core::pseudonyme::import(std::path::Path::new(&path))?;
+    Projekt::open(&state.paths, &project_id)?.set_pseudonyme(&liste)?;
+    Ok(liste)
+}
+
+#[tauri::command]
+pub fn bezeichnung_vorschlaege(
+    state: State<'_, AppState>,
+    project_id: String,
+    dateinamen: Vec<String>,
+) -> Result<Vec<String>> {
+    let liste = Projekt::open(&state.paths, &project_id)?.pseudonyme()?;
+    Ok(dateinamen
+        .iter()
+        .map(|d| godgrader_core::pseudonyme::vorschlag(d, &liste))
+        .collect())
+}

@@ -11,6 +11,8 @@ pub mod openrouter;
 pub mod paths;
 pub mod pdfium;
 pub mod projekt;
+pub mod pseudonyme;
+pub mod scans;
 pub mod secrets;
 pub mod settings;
 pub mod slots;

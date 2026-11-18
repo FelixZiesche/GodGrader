@@ -49,3 +49,16 @@ Kleinere Entscheidungen, die während der Entwicklung getroffen wurden. Neueste 
 | Projekte | Ein Ordner pro Projekt mit `projekt.sqlite` (WAL-Modus). Projekt-IDs sind UUIDs; Pfade werden gegen Manipulation geprüft. „Löschen“ entfernt den ganzen Ordner. | |
 | Testdateien | `samples/generator/bauen.js` erzeugt Word-Testdateien mit den Bausteinen aus godtest: Nachbau 11.1 (Oberstufe, 52 BE) und eine erfundene Klassenarbeit Klasse 9 (Sek I, 50 BE, 5 Aufgaben, mit und ohne Notenschlüssel). | Parser ohne echte Dateien testbar. |
 | KI-Hilfe beim Import | kommt mit Meilenstein 4, weil sie den OpenRouter-Chat-Aufruf braucht. | |
+
+## Meilenstein 3 – Scans
+
+| Thema | Entscheidung | Begründung |
+|---|---|---|
+| Bildformat | 300 dpi, Graustufen, **JPEG Qualität 90** (statt PNG). | Rund ein Zehntel der PNG-Größe, Handschrift bleibt scharf; kleinere Anfragen an OpenRouter, also geringere Kosten. |
+| Kontrast | Papierweiß wird am 90-%-Quantil der Helligkeit gemessen und auf Weiß gehoben (Faktor höchstens 1,4), danach Gamma 1,2. Kein Histogramm-Strecken. | Leere oder fast leere Seiten werden so nicht schwarz; Bleistift wird dunkler. |
+| Schwärzen | Rechtecke werden relativ zur Seite gespeichert (0–1) und mit Seitenauswahl je Klausur („alle“ oder „1, 3“). Die Balken werden **in die Bilddatei eingebrannt**; ungeschwärzte Bilder gibt es im Projekt nicht. Vorlage zum Zeichnen ist die erste Seite des gewählten PDFs. | Was an die KI geht, ist exakt das gespeicherte Bild. |
+| Originale | Die importierten PDFs werden ins Projekt kopiert (`scans/original/`). Ändert sich die Schwärzung später, erzeugt „Seiten neu erzeugen“ alle Bilder neu. Wird die letzte Klausur aus einem PDF gelöscht, wird auch dessen Kopie gelöscht. | Nachträgliches Korrigieren ohne neuen Import; „Projekt löschen“ entfernt alles. |
+| Stapel-PDF | Trennstellen ergeben sich aus „Seiten pro Klausur“ und lassen sich per Klick zwischen zwei Miniaturen setzen oder entfernen. Bei ungleich langen Klausuren erscheint ein Hinweis. Vorgabe-Bezeichnung „Klausur 1, 2, …“, nicht automatisch aus der Liste. | Reihenfolge im Stapel ist unbekannt; falsche automatische Zuordnung wäre schlimmer als keine. |
+| Ein PDF pro Schüler | Bezeichnung aus dem Dateinamen; mit Pseudonymliste wird der längste passende Listeneintrag gewählt (Groß-/Kleinschreibung, Umlaute, Trennzeichen egal), sonst der Dateiname ohne Endung. | |
+| Pseudonymliste | CSV (Semikolon, Tab oder Komma) oder XLSX; Spalte „Pseudonym“, sonst die erste Spalte. Vergebene Einträge werden in der Liste durchgestrichen und nicht mehr vorgeschlagen. Doppelte Bezeichnungen werden vor dem Import gemeldet. | |
+| Seite teilen | Option je Import: obere und untere Hälfte mit 3 % Überlappung, damit keine Zeile zerschnitten wird. | Auftrag 4.3. |

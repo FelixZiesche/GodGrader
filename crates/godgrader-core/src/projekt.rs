@@ -10,7 +10,7 @@ use crate::ewh::{Erwartungshorizont, Stufe};
 use crate::paths::AppPaths;
 use crate::{Error, Result};
 
-const SCHEMA_VERSION: i32 = 1;
+const SCHEMA_VERSION: i32 = 2;
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 #[serde(default)]
@@ -94,6 +94,11 @@ impl Projekt {
                 )
                 .map_err(db)?;
         }
+        if v < 2 {
+            self.conn
+                .execute_batch(crate::scans::SCHEMA_V2)
+                .map_err(db)?;
+        }
         if v < SCHEMA_VERSION {
             self.conn
                 .pragma_update(None, "user_version", SCHEMA_VERSION)
@@ -152,6 +157,10 @@ impl Projekt {
             std::fs::remove_dir_all(&dir)?;
         }
         Ok(())
+    }
+
+    pub(crate) fn conn(&self) -> &Connection {
+        &self.conn
     }
 
     pub fn get<T: DeserializeOwned>(&self, key: &str) -> Result<Option<T>> {

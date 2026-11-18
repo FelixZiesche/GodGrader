@@ -154,3 +154,34 @@ export interface Warnung {
   aufgabe: string | null
   text: string
 }
+
+// ---------- Scans ----------
+
+export type KlausurStatus = 'offen' | 'vorkorrigiert' | 'in_pruefung' | 'freigegeben'
+
+export interface SeiteInfo {
+  id: string
+  nr: number
+  halbteil: 'oben' | 'unten' | null
+  quelle_seite: number
+}
+
+export interface KlausurInfo {
+  id: string
+  bezeichnung: string
+  status: KlausurStatus
+  quelle: string
+  seiten: SeiteInfo[]
+}
+
+export interface Bereich { x: number; y: number; w: number; h: number }
+
+export type SeitenAuswahl = { art: 'alle' } | { art: 'seiten'; liste: number[] }
+
+export interface Schwaerzung { bereich: Bereich; seiten: SeitenAuswahl }
+
+export interface ImportAuftrag { bezeichnung: string; pdf: string; seiten: number[] }
+
+export interface Fortschritt { fertig: number; gesamt: number; text: string }
+
+export interface PdfInfo { seiten: number; name: string }

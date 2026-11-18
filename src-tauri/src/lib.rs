@@ -39,6 +39,22 @@ pub fn run() {
             commands::save_ewh,
             commands::validate_ewh,
             commands::berechne_notenschluessel,
+            commands::pdf_info,
+            commands::pdf_miniaturen,
+            commands::pdf_seitenvorschau,
+            commands::klausuren,
+            commands::scans_importieren,
+            commands::seiten_neu_erzeugen,
+            commands::klausur_umbenennen,
+            commands::klausur_loeschen,
+            commands::seiten_miniatur,
+            commands::beispielseite,
+            commands::get_schwaerzung,
+            commands::set_schwaerzung,
+            commands::get_pseudonyme,
+            commands::set_pseudonyme,
+            commands::pseudonyme_importieren,
+            commands::bezeichnung_vorschlaege,
         ])
         .run(tauri::generate_context!())
         .expect("GodGrader konnte nicht gestartet werden");

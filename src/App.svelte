@@ -7,6 +7,7 @@
   import Platzhalter from './pages/Platzhalter.svelte'
   import Projekte from './pages/Projekte.svelte'
   import Erwartungshorizont from './pages/Erwartungshorizont.svelte'
+  import Scans from './pages/Scans.svelte'
 
   type Seite =
     | 'projekte' | 'erwartungshorizont' | 'scans' | 'verarbeitung' | 'pruefen'
@@ -15,7 +16,7 @@
   const NAV: { id: Seite; titel: string; meilenstein?: number }[] = [
     { id: 'projekte', titel: 'Projekte' },
     { id: 'erwartungshorizont', titel: 'Erwartungshorizont' },
-    { id: 'scans', titel: 'Scans', meilenstein: 3 },
+    { id: 'scans', titel: 'Scans' },
     { id: 'verarbeitung', titel: 'Verarbeitung', meilenstein: 4 },
     { id: 'pruefen', titel: 'Prüfen', meilenstein: 5 },
     { id: 'statistik', titel: 'Statistik', meilenstein: 6 },
@@ -72,6 +73,8 @@
       <Projekte weiter={() => (seite = 'erwartungshorizont')} />
     {:else if seite === 'erwartungshorizont'}
       {#key store.projektId}<Erwartungshorizont />{/key}
+    {:else if seite === 'scans'}
+      {#key store.projektId}<Scans />{/key}
     {:else if seite === 'modelle'}
       <Modelle />
     {:else if seite === 'einstellungen'}
