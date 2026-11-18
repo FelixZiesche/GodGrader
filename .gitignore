@@ -32,3 +32,4 @@ samples/echt/
 projekte/
 scans/
 *.scan.pdf
+vendor/

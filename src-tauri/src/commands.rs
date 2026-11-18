@@ -130,3 +130,79 @@ pub fn reset_slots(state: State<'_, AppState>) -> Result<AppSettings> {
     s.slots = SlotSet::default();
     save_settings(state, s)
 }
+
+// ---------------- Projekte ----------------
+
+use godgrader_core::ewh::{self, validate::Warnung, Erwartungshorizont, Notenschluessel, Stufe};
+use godgrader_core::projekt::{Projekt, ProjektMeta};
+
+#[tauri::command]
+pub fn list_projects(state: State<'_, AppState>) -> Result<Vec<ProjektMeta>> {
+    Projekt::list(&state.paths)
+}
+
+#[tauri::command]
+pub fn create_project(state: State<'_, AppState>, meta: ProjektMeta) -> Result<ProjektMeta> {
+    Projekt::create(&state.paths, meta)?.meta()
+}
+
+#[tauri::command]
+pub fn update_project(state: State<'_, AppState>, meta: ProjektMeta) -> Result<ProjektMeta> {
+    Projekt::open(&state.paths, &meta.id)?.save_meta(&meta)
+}
+
+#[tauri::command]
+pub fn delete_project(state: State<'_, AppState>, id: String) -> Result<()> {
+    Projekt::delete(&state.paths, &id)
+}
+
+// ---------------- Erwartungshorizont ----------------
+
+#[tauri::command]
+pub fn get_ewh(
+    state: State<'_, AppState>,
+    project_id: String,
+) -> Result<Option<Erwartungshorizont>> {
+    Projekt::open(&state.paths, &project_id)?.ewh()
+}
+
+#[tauri::command]
+pub async fn import_ewh(
+    state: State<'_, AppState>,
+    project_id: String,
+    path: String,
+) -> Result<Erwartungshorizont> {
+    let p = std::path::PathBuf::from(&path);
+    let mut e = tauri::async_runtime::spawn_blocking(move || ewh::import_file(&p))
+        .await
+        .map_err(|e| Error::Ungueltig(e.to_string()))??;
+    let projekt = Projekt::open(&state.paths, &project_id)?;
+    // Stufe aus dem Projekt übernehmen, falls der Kopf nichts verrät
+    let meta = projekt.meta()?;
+    if e.kopf.lerngruppe.is_none() && !meta.lerngruppe.is_empty() {
+        e.kopf.lerngruppe = Some(meta.lerngruppe.clone());
+    }
+    projekt.save_ewh(&e)?;
+    Ok(e)
+}
+
+#[tauri::command]
+pub fn save_ewh(
+    state: State<'_, AppState>,
+    project_id: String,
+    ewh: Erwartungshorizont,
+) -> Result<()> {
+    let mut ewh = ewh;
+    ewh.renumber();
+    Projekt::open(&state.paths, &project_id)?.save_ewh(&ewh)
+}
+
+#[tauri::command]
+pub fn validate_ewh(ewh: Erwartungshorizont, halbe_be: bool) -> Vec<Warnung> {
+    ewh::validate::validate(&ewh, halbe_be)
+}
+
+#[tauri::command]
+pub fn berechne_notenschluessel(stufe: Stufe, gesamt: f64) -> Notenschluessel {
+    Notenschluessel::berechnen(stufe, gesamt)
+}

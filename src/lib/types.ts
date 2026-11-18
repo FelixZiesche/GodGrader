@@ -74,3 +74,83 @@ export const SLOTS: { kind: SlotKind; nr: number; titel: string; aufgabe: string
   { kind: 'feedback', nr: 3, titel: 'Feedback', aufgabe: 'Rückmeldetext pro Schüler.' },
   { kind: 'zweitmeinung', nr: 4, titel: 'Zweitmeinung', aufgabe: 'Unabhängige zweite Bewertung (optional).' },
 ]
+
+// ---------- Projekte und Erwartungshorizont ----------
+
+export type Stufe = 'oberstufe' | 'sek1'
+export type Afb = 'I' | 'II' | 'III'
+export type ElementArt = 'element' | 'raster'
+
+export interface ProjektMeta {
+  id: string
+  titel: string
+  lerngruppe: string
+  datum: string
+  stufe: Stufe
+  halbe_be: boolean
+  schwaerzen: boolean
+  budget_usd: number | null
+  warnschwelle_prozent: number | null
+  erstellt: string
+  geaendert: string
+}
+
+export interface Element {
+  id: string
+  titel: string
+  text: string
+  max_be: number
+  art: ElementArt
+  afb: Afb | null
+}
+
+export interface AfbAnteil {
+  afb: Afb
+  be: number
+  zusatz: string | null
+}
+
+export interface Aufgabe {
+  nr: string
+  text: string
+  max_be: number
+  loesung: string
+  elemente: Element[]
+  afb: AfbAnteil[]
+  hat_raster: boolean
+}
+
+export interface Kopf {
+  titel: string
+  schule: string | null
+  schuljahr: string | null
+  thema: string | null
+  lerngruppe: string | null
+  datum: string | null
+  gleichwertig_hinweis: boolean
+}
+
+export interface Notenstufe {
+  punkte: number | null
+  note: string
+  ab_be: number
+}
+
+export interface Notenschluessel {
+  stufen: Notenstufe[]
+  aus_dokument: boolean
+}
+
+export interface Erwartungshorizont {
+  kopf: Kopf
+  stufe: Stufe
+  aufgaben: Aufgabe[]
+  gesamt_be_dokument: number | null
+  notenschluessel: Notenschluessel | null
+  import_hinweise: string[]
+}
+
+export interface Warnung {
+  aufgabe: string | null
+  text: string
+}

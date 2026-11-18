@@ -5,14 +5,16 @@
   import Modelle from './pages/Modelle.svelte'
   import Einstellungen from './pages/Einstellungen.svelte'
   import Platzhalter from './pages/Platzhalter.svelte'
+  import Projekte from './pages/Projekte.svelte'
+  import Erwartungshorizont from './pages/Erwartungshorizont.svelte'
 
   type Seite =
     | 'projekte' | 'erwartungshorizont' | 'scans' | 'verarbeitung' | 'pruefen'
     | 'statistik' | 'export' | 'modelle' | 'einstellungen'
 
   const NAV: { id: Seite; titel: string; meilenstein?: number }[] = [
-    { id: 'projekte', titel: 'Projekte', meilenstein: 2 },
-    { id: 'erwartungshorizont', titel: 'Erwartungshorizont', meilenstein: 2 },
+    { id: 'projekte', titel: 'Projekte' },
+    { id: 'erwartungshorizont', titel: 'Erwartungshorizont' },
     { id: 'scans', titel: 'Scans', meilenstein: 3 },
     { id: 'verarbeitung', titel: 'Verarbeitung', meilenstein: 4 },
     { id: 'pruefen', titel: 'Prüfen', meilenstein: 5 },
@@ -22,7 +24,7 @@
     { id: 'einstellungen', titel: 'Einstellungen' },
   ]
 
-  let seite = $state<Seite>('modelle')
+  let seite = $state<Seite>('projekte')
   let startfehler = $state<string | null>(null)
   let bereit = $state(false)
 
@@ -48,6 +50,9 @@
 <div class="rahmen">
   <nav>
     <div class="marke">GodGrader</div>
+    {#if store.projekt}
+      <div class="aktuell" title="geöffnetes Projekt">{store.projekt.titel}</div>
+    {/if}
     {#each NAV as n (n.id)}
       <button class="navpunkt" class:aktiv={seite === n.id} onclick={() => (seite = n.id)}>
         {n.titel}
@@ -63,6 +68,10 @@
       <div class="warnung">Start fehlgeschlagen: {startfehler}</div>
     {:else if !bereit}
       <p class="hinweis">Lade …</p>
+    {:else if seite === 'projekte'}
+      <Projekte weiter={() => (seite = 'erwartungshorizont')} />
+    {:else if seite === 'erwartungshorizont'}
+      {#key store.projektId}<Erwartungshorizont />{/key}
     {:else if seite === 'modelle'}
       <Modelle />
     {:else if seite === 'einstellungen'}
@@ -112,6 +121,7 @@
   }
   .navpunkt.aktiv { background: var(--schwarz); color: var(--weiss); }
   .navpunkt.aktiv:hover { background: var(--schwarz); }
+  .aktuell { font-size: 12px; color: var(--grau-4); padding: 0 10px 12px; margin-top: -10px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .punkt { width: 8px; height: 8px; border-radius: 50%; background: var(--akzent); }
   main { overflow: auto; padding: 22px 28px; }
   .schleier {

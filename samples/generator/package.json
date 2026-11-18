@@ -1,0 +1,7 @@
+{
+  "name": "godgrader-testdateien",
+  "private": true,
+  "description": "Erzeugt Word-Testdateien im godtest-Format (nur für Tests)",
+  "scripts": { "build": "node bauen.js" },
+  "dependencies": { "docx": "^9.5.0" }
+}

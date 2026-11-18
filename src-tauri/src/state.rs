@@ -20,6 +20,10 @@ impl AppState {
         let paths = AppPaths::new(root);
         paths.ensure()?;
         let settings = AppSettings::load(&paths).unwrap_or_default();
+        // PDFium liegt im Ressourcenordner der installierten App
+        if let Ok(res) = app.path().resource_dir() {
+            godgrader_core::pdfium::set_library_dir(res.join("pdfium"));
+        }
         Ok(Self {
             paths,
             settings: Mutex::new(settings),

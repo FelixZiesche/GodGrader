@@ -30,6 +30,15 @@ pub fn run() {
             commands::check_slots,
             commands::validate_slot_drop,
             commands::reset_slots,
+            commands::list_projects,
+            commands::create_project,
+            commands::update_project,
+            commands::delete_project,
+            commands::get_ewh,
+            commands::import_ewh,
+            commands::save_ewh,
+            commands::validate_ewh,
+            commands::berechne_notenschluessel,
         ])
         .run(tauri::generate_context!())
         .expect("GodGrader konnte nicht gestartet werden");

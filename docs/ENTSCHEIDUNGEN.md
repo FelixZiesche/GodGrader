@@ -31,3 +31,21 @@ Kleinere Entscheidungen, die während der Entwicklung getroffen wurden. Neueste 
 | BE-Angaben | Neben „(x BE)“ am Elementende werden auch BE in Tabellenköpfen („Indikator (1 BE)“) und Sammelangaben („je 1 BE, 6 BE“) erkannt. | So sieht der echte Beispiel-Erwartungshorizont 11.1 aus. |
 | Pseudonyme | **Optional statt Pflicht** (Wunsch von Felix, 18.11.2026). Jede Klausur hat eine frei wählbare Bezeichnung (Pseudonym aus der Liste, Nummer oder Name). Die Pseudonymliste ist ein optionaler Import. Die Bezeichnung wird nie an OpenRouter gesendet; Schwärzen bleibt. In Exporten heißt das Feld weiter „Pseudonym:“, wenn eine Pseudonymliste genutzt wird, sonst „Name:“. | Änderung gegenüber Auftrag Abschnitt 2.1. |
 | Schwärzen | **Optional, pro Projekt schaltbar** (Wunsch von Felix, 18.11.2026). Ist es aus, erscheint vor der ersten Übertragung ein kurzer Hinweis, aber nichts wird gesperrt. | Änderung gegenüber Auftrag Abschnitt 2.2. |
+
+## Meilenstein 2 – Erwartungshorizont
+
+| Thema | Entscheidung | Begründung |
+|---|---|---|
+| Zwischenform | Word und PDF werden zuerst in dieselbe Zwischenform (Absätze mit fett/kursiv, Tabellen mit grau hinterlegten Zellen) übersetzt; danach arbeitet **ein** godtest-Parser. | Beide Formate liefern dasselbe Ergebnis; Tests prüfen das am Nachbau des Erwartungshorizonts 11.1. |
+| PDF-Tabellen | Tabellen werden aus den Linien erkannt (Word zeichnet sie als dünne gefüllte Rechtecke in `A6A6A6`), der graue Kopf (`E6E6E6`) aus Flächen. Tabellen über einen Seitenumbruch werden zusammengeführt, wiederholte Kopfzeilen entfernt. | Funktioniert mit „Als PDF speichern“ aus Word. Eingescannte PDFs werden abgelehnt (kein Text). |
+| PDF-Bibliothek | PDFium **chromium/8125** (passend zu `pdfium-render` 0.9, Feature `pdfium_8125`), wird mit dem Installer ausgeliefert (`resources/pdfium`). Skript: `scripts/pdfium-holen.sh`. | Wird in M3 ohnehin für das Rendern der Scans gebraucht. |
+| Bewertungselemente | Ein Element entsteht aus „(x BE)“ im Absatz, aus Tabellen mit „(x BE)“ im Spaltenkopf (eine Zelle je Zeile und BE-Spalte), aus Rasterzeilen und aus „je“-Angaben: „drei Ziele, je Ziel Indikator (1 BE) und Zielerreichung (1 BE)“ → zwei Elemente mit je 3 BE; die Beispieltabelle hängt als „Mögliche Lösungen“ daran. „(je 1 BE, 6 BE)“ → ein Element mit 6 BE. Ein Absatz wie „Kein vollkommener Wettbewerb (2 BE):“ mit passenden Unterpunkten wird zur Überschrift. „(je 1 BE)“ ohne Anzahl gilt als Hinweis, nicht als Element. | So ergibt der echte Erwartungshorizont 11.1 genau 31 Elemente mit den richtigen Summen. |
+| Titel der Elemente | fetter Anfang („**Formel:**“, „**Vergleich** (1 BE)“), sonst der Text vor der BE-Angabe, gekürzt auf etwa 65 Zeichen. | |
+| Musterlösung | Die vollständige Lösung einer Aufgabe (auch Hinweise ohne BE, z. B. „Ebenfalls voll richtig: …“) wird als Markdown gespeichert und später dem Bewerten-Modell mitgegeben. | Nichts aus dem Erwartungshorizont geht verloren. |
+| Material in Aufgaben | Tabellen ohne BE und „Quelle: …“ direkt nach dem Aufgabentext gehören zum Aufgabentext (z. B. Fälle A–C in 1b). Eine These „…“ direkt vor einer Aufgabe ebenfalls. | |
+| AFB | Aus der AFB-Übersicht je Aufgabe, auch geteilt (Aufgabe 6: 2 BE AFB II „Fachbegriffe“, 12 BE AFB III). Elemente erben den AFB der Aufgabe; „(AFB II)“ im Elementtext hat Vorrang. | Für die Statistik je AFB in M6. |
+| Notenschlüssel | Exakt in Ganzzahlen gerechnet (kein Gleitkomma-Rundungsfehler bei x,5). Unit-Tests mit allen Prüfwerten (30, 50 BE) und dem Schlüssel aus 11.1 (52 BE). | |
+| Speichern | Änderungen im Editor werden nach 0,6 s automatisch gespeichert, Prüfungen laufen bei jeder Änderung. Element-IDs (`2a-1` …) werden beim Speichern neu vergeben. | Kein Datenverlust durch vergessenes Speichern. |
+| Projekte | Ein Ordner pro Projekt mit `projekt.sqlite` (WAL-Modus). Projekt-IDs sind UUIDs; Pfade werden gegen Manipulation geprüft. „Löschen“ entfernt den ganzen Ordner. | |
+| Testdateien | `samples/generator/bauen.js` erzeugt Word-Testdateien mit den Bausteinen aus godtest: Nachbau 11.1 (Oberstufe, 52 BE) und eine erfundene Klassenarbeit Klasse 9 (Sek I, 50 BE, 5 Aufgaben, mit und ohne Notenschlüssel). | Parser ohne echte Dateien testbar. |
+| KI-Hilfe beim Import | kommt mit Meilenstein 4, weil sie den OpenRouter-Chat-Aufruf braucht. | |
