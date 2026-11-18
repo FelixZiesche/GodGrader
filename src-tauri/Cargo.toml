@@ -1,0 +1,24 @@
+[package]
+name = "godgrader"
+description = "GodGrader – KI-gestützte Vorkorrektur von Klausuren"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+
+[lib]
+name = "godgrader_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = "2"
+
+[dependencies]
+godgrader-core = { path = "../crates/godgrader-core" }
+serde = { version = "1.0.229", features = ["derive"] }
+serde_json = "1.0.154"
+tauri = "2"
+tauri-plugin-dialog = "2"
+tauri-plugin-opener = "2"
+tokio = { version = "1.54.1", features = ["rt-multi-thread", "sync"] }
+tracing = "0.1.44"

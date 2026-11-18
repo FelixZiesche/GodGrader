@@ -1,0 +1,88 @@
+/* Schlicht schwarz-weiß wie die Unterrichtsmaterialien.
+   Ein einziger sparsamer Akzent für Warnungen. */
+:root {
+  --schwarz: #000;
+  --weiss: #fff;
+  --grau-1: #f3f3f3;
+  --grau-2: #e6e6e6;
+  --grau-3: #a6a6a6;
+  --grau-4: #595959;
+  --akzent: #b3261e;
+  --akzent-hell: #fbeceb;
+  --radius: 4px;
+  --schrift: 'Google Sans', 'Google Sans Flex', system-ui, sans-serif;
+  color-scheme: light;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  background: var(--weiss);
+  color: var(--schwarz);
+  font-family: var(--schrift);
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+#app { height: 100%; }
+
+h1 { font-size: 20px; margin: 0 0 16px; font-weight: 700; }
+h2 { font-size: 15px; margin: 0 0 10px; font-weight: 700; }
+h3 { font-size: 14px; margin: 0 0 6px; font-weight: 700; }
+p { margin: 0 0 10px; }
+
+button {
+  font: inherit;
+  border: 1px solid var(--schwarz);
+  background: var(--weiss);
+  color: var(--schwarz);
+  border-radius: var(--radius);
+  padding: 6px 12px;
+  cursor: pointer;
+}
+button:hover:not(:disabled) { background: var(--grau-1); }
+button:disabled { opacity: 0.45; cursor: default; }
+button.primaer { background: var(--schwarz); color: var(--weiss); }
+button.primaer:hover:not(:disabled) { background: #222; }
+button.leise { border-color: transparent; background: transparent; text-decoration: underline; padding: 4px 6px; }
+
+input, select, textarea {
+  font: inherit;
+  border: 1px solid var(--grau-3);
+  border-radius: var(--radius);
+  padding: 6px 8px;
+  background: var(--weiss);
+  color: var(--schwarz);
+}
+input:focus, select:focus, textarea:focus, button:focus-visible {
+  outline: 2px solid var(--schwarz);
+  outline-offset: 1px;
+}
+
+label { display: block; }
+.feld { margin-bottom: 14px; }
+.feld > span { display: block; font-weight: 600; margin-bottom: 4px; }
+.feld small { display: block; color: var(--grau-4); margin-top: 3px; }
+
+.karte {
+  border: 1px solid var(--schwarz);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  background: var(--weiss);
+}
+.karte.grau { border-color: transparent; background: var(--grau-1); }
+
+.warnung {
+  border: 1px solid var(--akzent);
+  background: var(--akzent-hell);
+  color: var(--akzent);
+  border-radius: var(--radius);
+  padding: 8px 12px;
+}
+.hinweis { color: var(--grau-4); font-size: 13px; }
+.ok { font-weight: 600; }
+
+.zeile { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.abstand { height: 16px; }
