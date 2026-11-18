@@ -246,4 +246,5 @@ cargo test --workspace         # Tests (OpenRouter wird mit wiremock simuliert)
 ```
 
 GitHub Actions baut bei jedem Push den Windows-Installer (Artefakt „GodGrader-Windows-Installer“). Bei einem Tag
-`v*` wird der Installer zusätzlich als Release veröffentlicht.
+wird der Installer an den Release gehängt. Für einen schon vorhandenen Release: Actions → CI → „Run workflow“ und
+den Tag-Namen eintragen.
