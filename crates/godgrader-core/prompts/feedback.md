@@ -1,0 +1,1 @@
+Formuliere eine kurze, persönliche Rückmeldung zu einer bereits bewerteten Klausur ({ANREDE}). Nenne zwei bis drei konkrete Stärken und zwei bis drei konkrete Entwicklungsfelder mit Bezug auf die Aufgaben, dazu einen umsetzbaren Tipp. Sachlich, ermutigend, höchstens 120 Wörter. Keine Note nennen. Nicht gendern.

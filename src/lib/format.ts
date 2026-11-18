@@ -17,3 +17,10 @@ export function datum(unix: number): string {
   if (!unix) return '–'
   return new Date(unix * 1000).toLocaleString('de-DE', { dateStyle: 'medium', timeStyle: 'short' })
 }
+
+/** US-Dollar mit deutschem Komma, kleine Beträge genauer. */
+export function dollar(v: number | null | undefined): string {
+  if (v == null) return '–'
+  const stellen = v !== 0 && Math.abs(v) < 1 ? 3 : 2
+  return `${v.toLocaleString('de-DE', { minimumFractionDigits: stellen, maximumFractionDigits: stellen })} $`
+}

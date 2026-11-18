@@ -62,3 +62,25 @@ Kleinere Entscheidungen, die während der Entwicklung getroffen wurden. Neueste 
 | Ein PDF pro Schüler | Bezeichnung aus dem Dateinamen; mit Pseudonymliste wird der längste passende Listeneintrag gewählt (Groß-/Kleinschreibung, Umlaute, Trennzeichen egal), sonst der Dateiname ohne Endung. | |
 | Pseudonymliste | CSV (Semikolon, Tab oder Komma) oder XLSX; Spalte „Pseudonym“, sonst die erste Spalte. Vergebene Einträge werden in der Liste durchgestrichen und nicht mehr vorgeschlagen. Doppelte Bezeichnungen werden vor dem Import gemeldet. | |
 | Seite teilen | Option je Import: obere und untere Hälfte mit 3 % Überlappung, damit keine Zeile zerschnitten wird. | Auftrag 4.3. |
+
+## Meilenstein 4 – KI-Pipeline
+
+| Thema | Entscheidung | Begründung |
+|---|---|---|
+| Strikte Trennung | Eigene Typen: `AbschreibAnfrage` entsteht nur aus Seitenbildern und `aufgabennummern()`; sie hat kein Feld für Texte aus dem Erwartungshorizont. `BewertAnfrage` hat nur Text, der Nachrichteninhalt ist ein String (Bilder technisch ausgeschlossen). Unit-Tests und der Fake-OpenRouter-Test prüfen jede gesendete Anfrage. | Auftrag 4.4. |
+| Abschreiben | **Ein Aufruf pro Klausur** mit allen Seiten (beschriftet „Seite 2“ bzw. „Seite 2, obere Hälfte“). | Antworten gehen oft über Seitengrenzen; die Zuordnung zu Aufgaben klappt mit allen Seiten besser. |
+| Bewerten | Ein Aufruf pro Aufgabe; das Modell bekommt Aufgabentext, Elemente mit element_id und max. BE, die vollständige Musterlösung, den Gleichwertigkeitshinweis und die Abschrift. Zweitmeinung genauso, mit dem Modell aus Slot 4. | |
+| Antwortformat | `response_format: json_schema` (strict), wenn das Modell es laut Modellliste kann; sonst JSON aus dem Text (auch in ```json-Blöcken). Ungültige Antworten werden **einmal** wiederholt, danach ist der Schritt „Fehler“. | |
+| Prüfung der Bewertung | Fehlt ein Element, ist die Antwort ungültig. Vorschläge über dem Maximum werden begrenzt, krumme Werte auf ganze (bzw. halbe) BE **abgerundet**; das steht als Hinweis beim Schritt. `haengt_an_unsicherer_stelle` setzt die Sicherheit immer auf „niedrig“. | Im Zweifel nicht zugunsten der KI. |
+| Leere Antworten | Ohne Abschrift zu einer Aufgabe wird nichts gesendet: alle Elemente 0 BE, Sicherheit „niedrig“, Hinweis „Bitte auf dem Scan prüfen“. | Spart Kosten; die Lehrkraft prüft, ob das Abschreiben etwas übersehen hat. |
+| Speicherung | Tabellen `schritte`, `abschriften` (mit KI-Fassung für das Änderungsprotokoll), `bewertungen` (KI-, Zweit- und finale BE) und `aufrufe` (Kostenprotokoll). Jeder Schritt wird sofort gespeichert. Beim nächsten Start werden „läuft“-Reste auf „offen“ gesetzt. | Fortsetzen nach Absturz. |
+| Neu bewerten | Eine neue Erstbewertung setzt Bestätigungen der Lehrkraft für diese Aufgabe zurück. | Sonst stünde eine alte Bestätigung neben einem neuen Vorschlag. |
+| Kosten | `usage.cost` aus der Antwort (Anfrage mit `usage.include`); fehlt der Wert, aus Tokens × Preisliste (in der App mit * markiert). Auch fehlgeschlagene und abgeschnittene Antworten werden verbucht. Das Protokoll bleibt erhalten, wenn eine Klausur gelöscht wird. Abgebrochene Anfragen: Kosten unbekannt, nicht verbucht. | |
+| Kostenschätzung | Vor jedem Start, nur für noch offene Schritte. Ab drei echten Aufrufen einer Art gilt deren Durchschnitt (Spanne 0,75–1,4×), sonst Preisliste mit groben Tokenzahlen: 1 800 je Seitenbild, 650 Ausgabe je Seite, Denkaufwand ×1,5 bis ×5 (Spanne 0,5–2×). | |
+| Budget | Vor jeder Anfrage: bisherige Kosten + geschätzte Kosten laufender Anfragen + diese Anfrage > Budget → Lauf hält an (laufende Anfragen werden fertig). Erhöhen und erneut starten macht weiter. | Auftrag 3. |
+| Anhalten / Abbrechen | „Anhalten“ startet nichts Neues, laufende Anfragen enden normal. „Abbrechen“ beendet auch laufende Anfragen sofort; ihre Schritte bleiben „offen“. | Auftrag 7: „Pause/Abbrechen“. |
+| Parallelität | Eine Grenze für alle Anfragen eines Laufs (Einstellung, Standard 3). Abschriften kommen zuerst an die Reihe, Bewertungen folgen, sobald die Abschrift einer Klausur da ist. | |
+| Freigegebene Klausuren | Werden nie neu verarbeitet. | Freigabe ist endgültig, bis die Lehrkraft sie zurücknimmt (M5). |
+| Prompt-Vorlagen | Vier Vorlagen (Abschreiben, Bewerten/Zweitmeinung, Feedback, KI-Hilfe) als `prompts/*.md` im **App-Ordner**, Editor unter „Einstellungen“ mit „Vorlage zurücksetzen“. Startfassungen wörtlich aus dem Auftrag, ergänzt um kurze Schema-Hinweise. Fehlende Platzhalter werden angezeigt. | Eine Vorlage für alle Projekte ist einfacher zu pflegen; projektbezogene Vorlagen ließen sich später ergänzen. |
+| KI-Hilfe beim Import | Button bei Aufgaben mit Warnungen im Erwartungshorizont. Das Bewerten-Modell schlägt Elemente vor, die Lehrkraft übernimmt oder verwirft. Kosten werden im Projekt verbucht. | Auftrag 4.2. |
+| Schwärzen aus | Hinweis auf der Seite „Verarbeitung“ und im Startdialog, nichts wird gesperrt. | Entscheidung zu M2. |

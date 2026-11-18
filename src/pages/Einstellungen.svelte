@@ -2,6 +2,7 @@
   import { onMount } from 'svelte'
   import { api, fehlertext } from '../lib/api'
   import { store } from '../lib/store.svelte'
+  import PromptVorlagen from '../components/PromptVorlagen.svelte'
   import type { AppInfo, KeyInfo, KeyStatus } from '../lib/types'
 
   let keyStatus = $state<KeyStatus | null>(null)
@@ -125,6 +126,8 @@
       </div>
     </section>
   {/if}
+
+  <PromptVorlagen />
 
   <section class="karte grau">
     <h2>Über GodGrader</h2>

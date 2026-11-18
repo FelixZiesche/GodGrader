@@ -1,5 +1,7 @@
+use std::collections::HashMap;
 use std::sync::Mutex;
 
+use godgrader_core::ki::pipeline::Steuerung;
 use godgrader_core::openrouter::{OpenRouter, DEFAULT_BASE_URL};
 use godgrader_core::paths::AppPaths;
 use godgrader_core::secrets::{KeyringStore, SecretStore};
@@ -11,6 +13,8 @@ pub struct AppState {
     pub settings: Mutex<AppSettings>,
     pub secrets: Box<dyn SecretStore>,
     pub base_url: String,
+    /// Laufende Verarbeitung je Projekt.
+    pub laeufe: Mutex<HashMap<String, Steuerung>>,
 }
 
 impl AppState {
@@ -31,6 +35,7 @@ impl AppState {
             // Nur für Entwicklung/Tests umstellbar, Standard ist OpenRouter.
             base_url: std::env::var("GODGRADER_OPENROUTER_URL")
                 .unwrap_or_else(|_| DEFAULT_BASE_URL.to_string()),
+            laeufe: Mutex::new(HashMap::new()),
         })
     }
 

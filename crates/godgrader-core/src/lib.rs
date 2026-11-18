@@ -6,6 +6,7 @@
 
 pub mod error;
 pub mod ewh;
+pub mod ki;
 pub mod models;
 pub mod openrouter;
 pub mod paths;

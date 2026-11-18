@@ -3,6 +3,7 @@ import type {
   AppInfo, AppSettings, Erwartungshorizont, KeyInfo, KeyStatus, ModelCache, Notenschluessel,
   ProjektMeta, SlotCheck, SlotKind, Stufe, Warnung,
   ImportAuftrag, KlausurInfo, PdfInfo, Schwaerzung,
+  Aufruf, Element, PromptArt, PromptVorlage, Schaetzung, Uebersicht,
 } from './types'
 
 /** Fehler aus Rust kommen als deutscher Text. */
@@ -63,4 +64,18 @@ export const api = {
     invoke<string[]>('pseudonyme_importieren', { projectId, path }),
   bezeichnungVorschlaege: (projectId: string, dateinamen: string[]) =>
     invoke<string[]>('bezeichnung_vorschlaege', { projectId, dateinamen }),
+
+  pipelineUebersicht: (projectId: string) => invoke<Uebersicht>('pipeline_uebersicht', { projectId }),
+  kostenSchaetzen: (projectId: string, klausurIds: string[]) =>
+    invoke<Schaetzung>('kosten_schaetzen', { projectId, klausurIds }),
+  pipelineStarten: (projectId: string, klausurIds: string[]) =>
+    invoke<void>('pipeline_starten', { projectId, klausurIds }),
+  pipelineAnhalten: (projectId: string) => invoke<void>('pipeline_anhalten', { projectId }),
+  pipelineAbbrechen: (projectId: string) => invoke<void>('pipeline_abbrechen', { projectId }),
+  aufrufe: (projectId: string, klausurId: string | null) => invoke<Aufruf[]>('aufrufe', { projectId, klausurId }),
+  promptsLesen: () => invoke<PromptVorlage[]>('prompts_lesen'),
+  promptSpeichern: (art: PromptArt, text: string) => invoke<void>('prompt_speichern', { art, text }),
+  promptZuruecksetzen: (art: PromptArt) => invoke<void>('prompt_zuruecksetzen', { art }),
+  kiHilfeEwh: (projectId: string, ewh: Erwartungshorizont, nr: string) =>
+    invoke<Element[]>('ki_hilfe_ewh', { projectId, ewh, nr }),
 }

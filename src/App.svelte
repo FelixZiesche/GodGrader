@@ -8,6 +8,7 @@
   import Projekte from './pages/Projekte.svelte'
   import Erwartungshorizont from './pages/Erwartungshorizont.svelte'
   import Scans from './pages/Scans.svelte'
+  import Verarbeitung from './pages/Verarbeitung.svelte'
 
   type Seite =
     | 'projekte' | 'erwartungshorizont' | 'scans' | 'verarbeitung' | 'pruefen'
@@ -17,7 +18,7 @@
     { id: 'projekte', titel: 'Projekte' },
     { id: 'erwartungshorizont', titel: 'Erwartungshorizont' },
     { id: 'scans', titel: 'Scans' },
-    { id: 'verarbeitung', titel: 'Verarbeitung', meilenstein: 4 },
+    { id: 'verarbeitung', titel: 'Verarbeitung' },
     { id: 'pruefen', titel: 'Prüfen', meilenstein: 5 },
     { id: 'statistik', titel: 'Statistik', meilenstein: 6 },
     { id: 'export', titel: 'Export', meilenstein: 6 },
@@ -75,6 +76,8 @@
       {#key store.projektId}<Erwartungshorizont />{/key}
     {:else if seite === 'scans'}
       {#key store.projektId}<Scans />{/key}
+    {:else if seite === 'verarbeitung'}
+      {#key store.projektId}<Verarbeitung />{/key}
     {:else if seite === 'modelle'}
       <Modelle />
     {:else if seite === 'einstellungen'}

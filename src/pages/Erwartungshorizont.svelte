@@ -5,7 +5,8 @@
   import { api, fehlertext } from '../lib/api'
   import { store } from '../lib/store.svelte'
   import AufgabeEditor from '../components/AufgabeEditor.svelte'
-  import type { Erwartungshorizont, Warnung } from '../lib/types'
+  import Dialog from '../components/Dialog.svelte'
+  import type { Element, Erwartungshorizont, Warnung } from '../lib/types'
 
   let ewh = $state<Erwartungshorizont | null>(null)
   let laden = $state(true)
@@ -103,6 +104,28 @@
     if (!ewh) return
     ewh.aufgaben.push({ nr: String(ewh.aufgaben.length + 1), text: '', max_be: 1, loesung: '', elemente: [], afb: [], hat_raster: false })
   }
+  // KI-Hilfe beim Import
+  let hilfe = $state<{ index: number; nr: string; elemente: Element[] | null; fehler: string | null } | null>(null)
+  let hilfeOffen = $state(false)
+  const hilfeSumme = $derived(hilfe?.elemente?.reduce((s, e) => s + e.max_be, 0) ?? 0)
+  async function kiHilfeStarten(i: number) {
+    if (!ewh || !projekt) return
+    const nr = ewh.aufgaben[i].nr
+    hilfe = { index: i, nr, elemente: null, fehler: null }
+    hilfeOffen = true
+    try {
+      const el = await api.kiHilfeEwh(projekt.id, $state.snapshot(ewh) as Erwartungshorizont, nr)
+      if (hilfe?.nr === nr) hilfe.elemente = el
+    } catch (e) {
+      if (hilfe?.nr === nr) hilfe.fehler = fehlertext(e)
+    }
+  }
+  function kiHilfeUebernehmen() {
+    if (!ewh || !hilfe?.elemente) return
+    const a = ewh.aufgaben[hilfe.index]
+    if (a && a.nr === hilfe.nr) a.elemente = hilfe.elemente
+    hilfeOffen = false
+  }
 </script>
 
 <div class="kopf">
@@ -170,6 +193,7 @@
         warnungen={proAufgabe(ewh.aufgaben[i].nr)}
         halbeBe={projekt.halbe_be}
         entfernen={() => ewh!.aufgaben.splice(i, 1)}
+        kiHilfe={() => kiHilfeStarten(i)}
       />
     {/each}
     <button onclick={aufgabeNeu}>+ Aufgabe</button>
@@ -204,6 +228,9 @@
 {/if}
 
 <style>
+  .vorschlag { width: 100%; border-collapse: collapse; margin-bottom: 8px; }
+  .vorschlag th, .vorschlag td { text-align: left; padding: 4px 6px; border-bottom: 1px solid var(--grau-2); vertical-align: top; }
+  .vorschlag th { background: var(--grau-2); }
   .kopf { display: flex; justify-content: space-between; align-items: baseline; }
   .rot { color: var(--akzent); }
   .import { display: flex; justify-content: space-between; align-items: center; gap: 12px; border: 1px dashed var(--grau-3); }
@@ -218,3 +245,27 @@
   .noten td { border: 1px solid var(--grau-3); padding: 2px; text-align: center; min-width: 44px; }
   .noten input { width: 48px; padding: 2px; text-align: center; border: none; }
 </style>
+
+<Dialog titel={hilfe ? `KI-Vorschlag für Aufgabe ${hilfe.nr}` : 'KI-Vorschlag'} bind:offen={hilfeOffen}>
+  {#if hilfe}
+    {#if hilfe.fehler}
+      <div class="warnung">{hilfe.fehler}</div>
+    {:else if !hilfe.elemente}
+      <p class="hinweis">Das Bewerten-Modell arbeitet …</p>
+    {:else}
+      <table class="vorschlag">
+        <thead><tr><th>Element</th><th>BE</th></tr></thead>
+        <tbody>
+          {#each hilfe.elemente as e, i (i)}
+            <tr><td><strong>{e.titel}</strong>{#if e.text}<div class="hinweis">{e.text}</div>{/if}</td><td>{String(e.max_be).replace('.', ',')}</td></tr>
+          {/each}
+        </tbody>
+      </table>
+      <p class="hinweis">Summe {String(hilfeSumme).replace('.', ',')} BE. Übernehmen ersetzt die bisherigen Elemente dieser Aufgabe.</p>
+    {/if}
+  {/if}
+  {#snippet aktionen()}
+    <button onclick={() => (hilfeOffen = false)}>Verwerfen</button>
+    <button class="primaer" onclick={kiHilfeUebernehmen} disabled={!hilfe?.elemente}>Übernehmen</button>
+  {/snippet}
+</Dialog>

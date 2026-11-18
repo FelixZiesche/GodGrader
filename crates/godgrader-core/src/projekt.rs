@@ -10,7 +10,7 @@ use crate::ewh::{Erwartungshorizont, Stufe};
 use crate::paths::AppPaths;
 use crate::{Error, Result};
 
-const SCHEMA_VERSION: i32 = 2;
+const SCHEMA_VERSION: i32 = 3;
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 #[serde(default)]
@@ -74,6 +74,9 @@ impl Projekt {
         conn.pragma_update(None, "synchronous", "NORMAL")
             .map_err(db)?;
         conn.pragma_update(None, "foreign_keys", "ON").map_err(db)?;
+        // Pipeline und Oberfläche greifen gleichzeitig zu
+        conn.busy_timeout(std::time::Duration::from_secs(10))
+            .map_err(db)?;
         let p = Projekt {
             dir: dir.to_path_buf(),
             conn,
@@ -97,6 +100,11 @@ impl Projekt {
         if v < 2 {
             self.conn
                 .execute_batch(crate::scans::SCHEMA_V2)
+                .map_err(db)?;
+        }
+        if v < 3 {
+            self.conn
+                .execute_batch(crate::ki::speicher::SCHEMA_V3)
                 .map_err(db)?;
         }
         if v < SCHEMA_VERSION {

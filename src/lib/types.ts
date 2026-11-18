@@ -185,3 +185,83 @@ export interface ImportAuftrag { bezeichnung: string; pdf: string; seiten: numbe
 export interface Fortschritt { fertig: number; gesamt: number; text: string }
 
 export interface PdfInfo { seiten: number; name: string }
+
+// ---------- KI-Verarbeitung ----------
+
+export type SchrittStatus = 'offen' | 'laeuft' | 'fertig' | 'fehler'
+export type SchrittArt = 'abschreiben' | 'bewerten' | 'zweitmeinung'
+
+export interface KlausurFortschritt {
+  id: string
+  bezeichnung: string
+  status: KlausurStatus
+  seiten: number
+  abschrift: SchrittStatus
+  abschrift_hinweis: string | null
+  aufgaben: number
+  bewertet: number
+  zweit: number
+  laeuft: boolean
+  fehler: string[]
+  kosten: number
+}
+
+export interface Uebersicht {
+  klausuren: KlausurFortschritt[]
+  kosten_gesamt: number
+  budget: number | null
+  zweitmeinung: boolean
+  hat_ewh: boolean
+  laeuft: boolean
+}
+
+export interface Schaetzung {
+  klausuren: number
+  seitenbilder: number
+  aufrufe: number
+  kosten: number
+  kosten_min: number
+  kosten_max: number
+  aus_erfahrung: boolean
+  ohne_preis: string[]
+  bisher: number
+  budget: number | null
+}
+
+export type Ereignis =
+  | { art: 'schritt'; klausur_id: string; schritt: SchrittArt; aufgabe: string; status: SchrittStatus; fehler: string | null }
+  | { art: 'kosten'; gesamt: number }
+  | { art: 'klausur'; klausur_id: string; status: KlausurStatus }
+  | { art: 'hinweis'; text: string }
+
+export interface LaufErgebnis {
+  ende: 'fertig' | 'angehalten' | 'abgebrochen' | 'budget'
+  fehler: number
+  kosten: number
+}
+
+export interface PipelineMeldung { projekt_id: string; ereignis: Ereignis }
+export interface PipelineEnde { projekt_id: string; ergebnis: LaufErgebnis | null; fehler: string | null }
+
+export type PromptArt = 'abschreiben' | 'bewerten' | 'feedback' | 'ewh_hilfe'
+
+export interface PromptVorlage {
+  art: PromptArt
+  titel: string
+  text: string
+  ist_standard: boolean
+  platzhalter: string[]
+}
+
+export interface Aufruf {
+  klausur_id: string | null
+  art: string
+  aufgabe: string | null
+  modell: string
+  tokens_ein: number
+  tokens_aus: number
+  kosten: number
+  geschaetzt: boolean
+  dauer_ms: number
+  ok: boolean
+}

@@ -24,6 +24,13 @@ pub enum Error {
 
     #[error("{0}")]
     Ungueltig(String),
+
+    /// Antwort wegen „max. Tokens“ abgeschnitten; enthält die angefallenen Kosten.
+    #[error("Die Antwort des Modells wurde abgeschnitten. Bitte unter „Modelle“ die max. Tokens des Slots erhöhen.")]
+    Abgeschnitten(f64),
+
+    #[error("Abgebrochen.")]
+    Abgebrochen,
 }
 
 pub type Result<T> = std::result::Result<T, Error>;

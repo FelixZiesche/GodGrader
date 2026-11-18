@@ -2,6 +2,7 @@
 //! `godgrader-core`.
 
 mod commands;
+mod ki;
 mod state;
 
 use tauri::Manager;
@@ -18,6 +19,16 @@ pub fn run() {
         })
         .invoke_handler(tauri::generate_handler![
             commands::app_info,
+            ki::pipeline_uebersicht,
+            ki::kosten_schaetzen,
+            ki::pipeline_starten,
+            ki::pipeline_anhalten,
+            ki::pipeline_abbrechen,
+            ki::aufrufe,
+            ki::prompts_lesen,
+            ki::prompt_speichern,
+            ki::prompt_zuruecksetzen,
+            ki::ki_hilfe_ewh,
             commands::get_settings,
             commands::save_settings,
             commands::ack_hinweis,

@@ -6,7 +6,8 @@
     warnungen = [],
     halbeBe = false,
     entfernen,
-  }: { aufgabe: Aufgabe; warnungen?: string[]; halbeBe?: boolean; entfernen: () => void } = $props()
+    kiHilfe,
+  }: { aufgabe: Aufgabe; warnungen?: string[]; halbeBe?: boolean; entfernen: () => void; kiHilfe?: () => void } = $props()
 
   let offen = $state<Record<number, boolean>>({})
   let textOffen = $state(false)
@@ -69,6 +70,12 @@
   </div>
 
   {#each warnungen as w (w)}<div class="warnung klein">{w}</div>{/each}
+  {#if warnungen.length && kiHilfe}
+    <div class="zeile kihilfe">
+      <button onclick={kiHilfe}>KI-Hilfe: Elemente vorschlagen</button>
+      <span class="hinweis">Das Bewerten-Modell gliedert die Musterlösung neu. Sie entscheiden, ob Sie den Vorschlag übernehmen.</span>
+    </div>
+  {/if}
 
   <button class="aufklapp" onclick={() => (textOffen = !textOffen)}>{textOffen ? '▾' : '▸'} Aufgabentext</button>
   {#if textOffen}
@@ -120,6 +127,7 @@
 </section>
 
 <style>
+  .kihilfe { margin: 6px 0 8px; gap: 10px; }
   .aufgabe { margin-bottom: 14px; }
   .aufgabe.fehler { border-color: var(--akzent); }
   .kopfzeile { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; margin-bottom: 8px; }
