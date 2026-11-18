@@ -10,7 +10,7 @@ use crate::ewh::{Erwartungshorizont, Stufe};
 use crate::paths::AppPaths;
 use crate::{Error, Result};
 
-const SCHEMA_VERSION: i32 = 4;
+const SCHEMA_VERSION: i32 = 5;
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 #[serde(default)]
@@ -110,6 +110,11 @@ impl Projekt {
         if v < 4 {
             self.conn
                 .execute_batch(crate::pruefung::SCHEMA_V4)
+                .map_err(db)?;
+        }
+        if v < 5 {
+            self.conn
+                .execute_batch(crate::ki::feedback::SCHEMA_V5)
                 .map_err(db)?;
         }
         if v < SCHEMA_VERSION {

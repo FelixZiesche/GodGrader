@@ -98,3 +98,20 @@ Kleinere Entscheidungen, die während der Entwicklung getroffen wurden. Neueste 
 | Protokoll | Jede Änderung (BE oder Bestätigung) wird mit KI-Vorschlag, altem und neuem Wert gespeichert und ist je Klausur einsehbar. Für die Statistik zählt „geändert“, wenn die finale BE vom KI-Vorschlag abweicht. | Auftrag 4.5, Statistik in M6. |
 | Live-Anzeige | Summe aus finalen BE, sonst KI-Vorschlag; Prozent und NP bzw. Note nach dem Notenschlüssel des Erwartungshorizonts. | |
 | Seitenbilder | Kommen als rohe Bytes über die Tauri-Schnittstelle (kein Dateizugriff aus der Oberfläche, kein Asset-Protokoll nötig). | Weniger freigegebene Pfade. |
+
+## Meilenstein 6 – Feedback und Exporte
+
+| Thema | Entscheidung | Begründung |
+|---|---|---|
+| Feedback | Slot 3, nur für freigegebene Klausuren. Das Modell bekommt Stufe, Erwartungshorizont der Aufgaben, finale BE mit Begründungen und die (ggf. korrigierte) Abschrift, aber weder Bilder noch Name oder Pseudonym. Oberstufe „Sie“, Sek I „du“. Der Text ist frei bearbeitbar; „Neu erzeugen“ fragt vorher, weil eigene Änderungen verloren gehen. Kosten werden im Projekt verbucht, das Budget gilt. | Auftrag 4.6. |
+| Nur Freigegebenes | Notenliste, Korrekturbögen, Rückmeldungen und Statistik enthalten nur freigegebene Klausuren und nur die finalen BE. Fehlende werden in der App und im Exportbericht genannt. | „Keine Note ohne meine Freigabe exportieren.“ |
+| Kurzbegründung | Im Korrekturbogen steht die Begründung der KI nur, wenn die finale BE dem KI-Vorschlag entspricht. Hat die Lehrkraft geändert, bleibt das Feld leer. | Sonst stünde eine Begründung neben einer Punktzahl, zu der sie nicht passt. |
+| Bewertungsraster | Aufgaben im AFB III bekommen im Korrekturbogen das ausgefüllte Raster (Element, max. BE, erreichte BE). | Auftrag. |
+| Kopf | Wie im Erwartungshorizont, „Erwartungshorizont“ wird durch „Korrekturbogen“, „Rückmeldung“ bzw. „Statistik“ ersetzt. „Pseudonym:“, wenn das Projekt eine Pseudonymliste hat, sonst „Name:“ (die Bezeichnung ist dann frei gewählt). | Pseudonyme sind optional (Entscheidung zu M3). |
+| Sammeldatei | `Korrekturboegen_{Projekt}.docx`, alle Bögen mit Seitenumbruch. | Ohne Umlaut, damit der Name überall funktioniert. |
+| Dateinamen | Zeichen, die Windows nicht erlaubt (`\ / : * ? " < > \|`), werden entfernt, Leerzeichen zu `_`. Vorhandene Dateien gleichen Namens werden ersetzt. | |
+| Notenliste | Excel mit den Blättern „Notenliste“ und „Statistik“, dazu CSV (Semikolon, UTF-8 mit BOM, Dezimalkomma), damit Excel sie direkt richtig öffnet. | Auftrag. |
+| Schlechte Noten | Oberstufe: unter 5 NP. Sek I: Noten 5 und 6. Warnschwelle je Projekt (unter „Projekte“ → Bearbeiten), überschritten wird sie bei einem höheren Anteil. | Übliche Genehmigungsgrenze; die Schwelle selbst legt die Lehrkraft fest. |
+| Kennzahlen | Durchschnitt, Median, Spannweite in NP (Oberstufe) bzw. Notenzahl ohne Tendenz (Sek I). Lösungsquote = erreichte BE / mögliche BE aller freigegebenen Klausuren. Die drei schwächsten Elemente nach Lösungsquote. „Geändert“ zählt Elemente, deren finale BE vom KI-Vorschlag abweicht. | |
+| Notenspiegel in Word | Als Tabelle mit grau gefüllten Zellen statt als eingebettetes Diagramm. | Bleibt schwarz-weiß, druckt sauber und braucht kein Diagrammobjekt. |
+| Exportordner | Frei wählbar, wird je Projekt auf diesem Rechner gemerkt. „Ordner öffnen“ öffnet ihn im Dateimanager. | |

@@ -10,6 +10,8 @@
   import Scans from './pages/Scans.svelte'
   import Verarbeitung from './pages/Verarbeitung.svelte'
   import Pruefen from './pages/Pruefen.svelte'
+  import Statistik from './pages/Statistik.svelte'
+  import Export from './pages/Export.svelte'
 
   type Seite =
     | 'projekte' | 'erwartungshorizont' | 'scans' | 'verarbeitung' | 'pruefen'
@@ -21,8 +23,8 @@
     { id: 'scans', titel: 'Scans' },
     { id: 'verarbeitung', titel: 'Verarbeitung' },
     { id: 'pruefen', titel: 'Prüfen' },
-    { id: 'statistik', titel: 'Statistik', meilenstein: 6 },
-    { id: 'export', titel: 'Export', meilenstein: 6 },
+    { id: 'statistik', titel: 'Statistik' },
+    { id: 'export', titel: 'Export' },
     { id: 'modelle', titel: 'Modelle' },
     { id: 'einstellungen', titel: 'Einstellungen' },
   ]
@@ -81,6 +83,10 @@
       {#key store.projektId}<Verarbeitung />{/key}
     {:else if seite === 'pruefen'}
       {#key store.projektId}<Pruefen />{/key}
+    {:else if seite === 'statistik'}
+      {#key store.projektId}<Statistik />{/key}
+    {:else if seite === 'export'}
+      {#key store.projektId}<Export />{/key}
     {:else if seite === 'modelle'}
       <Modelle />
     {:else if seite === 'einstellungen'}

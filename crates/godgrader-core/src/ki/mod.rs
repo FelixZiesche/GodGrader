@@ -4,6 +4,7 @@
 pub mod anfragen;
 pub mod aufruf;
 pub mod ewh_hilfe;
+pub mod feedback;
 pub mod pipeline;
 pub mod prompts;
 pub mod schaetzung;

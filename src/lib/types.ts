@@ -330,3 +330,49 @@ export interface ProtokollEintrag {
   bestaetigt: boolean
   zeit: string
 }
+
+// ---------- Statistik und Export ----------
+
+export interface KlausurZeile {
+  id: string
+  bezeichnung: string
+  je_aufgabe: number[]
+  summe: number
+  prozent: number
+  punkte: number | null
+  note: string | null
+}
+
+export interface Quote { name: string; zusatz: string | null; erreicht: number; moeglich: number; quote: number }
+
+export interface Statistik {
+  stufe: Stufe
+  anzahl: number
+  nicht_freigegeben: string[]
+  notenspiegel: { label: string; anzahl: number }[]
+  durchschnitt: number | null
+  median: number | null
+  minimum: number | null
+  maximum: number | null
+  durchschnitt_prozent: number | null
+  je_aufgabe: Quote[]
+  je_afb: Quote[]
+  je_element: Quote[]
+  schwaechste: Quote[]
+  geaendert: number
+  mit_vorschlag: number
+  geaendert_prozent: number | null
+  schlecht_anzahl: number
+  schlecht_prozent: number | null
+  warnschwelle: number | null
+  ueber_warnschwelle: boolean
+}
+
+export interface StatistikAntwort { zeilen: KlausurZeile[]; statistik: Statistik; label: string; aufgaben: string[] }
+
+export interface FeedbackZeile { klausur_id: string; text: string; ki_text: string; aktualisiert: string }
+export interface FeedbackEintrag { klausur_id: string; bezeichnung: string; status: KlausurStatus; feedback: FeedbackZeile | null }
+export interface FeedbackErgebnis { erzeugt: number; fehler: string[]; kosten: number; budget_erreicht: boolean }
+
+export interface ExportOptionen { notenliste: boolean; korrekturboegen: boolean; sammeldatei: boolean; feedback: boolean; statistik: boolean }
+export interface ExportBericht { ordner: string; dateien: string[]; fehlend: string[]; ohne_feedback: string[] }

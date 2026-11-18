@@ -3,6 +3,7 @@ import type {
   AppInfo, AppSettings, Erwartungshorizont, KeyInfo, KeyStatus, ModelCache, Notenschluessel,
   ProjektMeta, SlotCheck, SlotKind, Stufe, Warnung,
   ImportAuftrag, KlausurInfo, PdfInfo, Schwaerzung,
+  ExportBericht, ExportOptionen, FeedbackEintrag, FeedbackErgebnis, StatistikAntwort,
   Aufruf, Element, PromptArt, ProtokollEintrag, PruefDaten, PromptVorlage, Schaetzung, Uebersicht,
 } from './types'
 
@@ -93,4 +94,14 @@ export const api = {
   seitenbild: (projectId: string, seiteId: string) => invoke<ArrayBuffer>('seitenbild', { projectId, seiteId }),
   aufgabeNeuBewerten: (projectId: string, klausurId: string, aufgabe: string) =>
     invoke<PruefDaten>('aufgabe_neu_bewerten', { projectId, klausurId, aufgabe }),
+
+  statistik: (projectId: string) => invoke<StatistikAntwort>('statistik', { projectId }),
+  feedbackListe: (projectId: string) => invoke<FeedbackEintrag[]>('feedback_liste', { projectId }),
+  feedbackErzeugen: (projectId: string, klausurIds: string[]) =>
+    invoke<FeedbackErgebnis>('feedback_erzeugen', { projectId, klausurIds }),
+  feedbackSpeichern: (projectId: string, klausurId: string, text: string) =>
+    invoke<void>('feedback_speichern', { projectId, klausurId, text }),
+  exportieren: (projectId: string, ordner: string, optionen: ExportOptionen) =>
+    invoke<ExportBericht>('exportieren', { projectId, ordner, optionen }),
+  ordnerOeffnen: (ordner: string) => invoke<void>('ordner_oeffnen', { ordner }),
 }

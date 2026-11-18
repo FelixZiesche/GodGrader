@@ -2,6 +2,7 @@
 //! `godgrader-core`.
 
 mod commands;
+mod export;
 mod ki;
 mod pruefen;
 mod state;
@@ -20,6 +21,12 @@ pub fn run() {
         })
         .invoke_handler(tauri::generate_handler![
             commands::app_info,
+            export::statistik,
+            export::feedback_liste,
+            export::feedback_erzeugen,
+            export::feedback_speichern,
+            export::exportieren,
+            export::ordner_oeffnen,
             pruefen::pruefdaten,
             pruefen::be_setzen,
             pruefen::bestaetigung_aufheben,
